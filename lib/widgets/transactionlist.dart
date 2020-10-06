@@ -22,20 +22,21 @@ class TransactionList extends StatelessWidget {
   // ];
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: 450,
-      child: userTransction.isEmpty
-          ? Column(
+    return userTransction.isEmpty
+        ? LayoutBuilder(builder: (ctx, constraints) {
+            return Column(
               children: <Widget>[
                 Text(
                   'No Transactions Found!!!',
-                  style: Theme.of(context).textTheme.title,
+                  style: TextStyle(
+                      color: Colors.deepOrange,
+                      fontSize: MediaQuery.of(context).size.width / 20),
                 ),
                 SizedBox(
                   height: 10,
                 ),
                 Container(
-                  height: 200,
+                  height: constraints.maxHeight * 0.6,
                   child: Image.asset(
                     'assets/images/waiting.png',
                     // 'https://picsum.photos/250?image=9',
@@ -43,89 +44,96 @@ class TransactionList extends StatelessWidget {
                   ),
                 )
               ],
-            )
-          : ListView.builder(
-              itemBuilder: (ctx, index) {
-                return Card(
-                  elevation: 5,
-                  margin: EdgeInsets.symmetric(
-                    vertical: 8,
-                    horizontal: 5,
+            );
+          })
+        : ListView.builder(
+            itemBuilder: (ctx, index) {
+              return Card(
+                elevation: 5,
+                margin: EdgeInsets.symmetric(
+                  vertical: 8,
+                  horizontal: 5,
+                ),
+                child: ListTile(
+                  leading: CircleAvatar(
+                    radius: 30,
+                    child: Padding(
+                      padding: EdgeInsets.all(6),
+                      child: FittedBox(
+                        child: Text('\$${userTransction[index].amount}'),
+                      ),
+                    ),
                   ),
-                  child: ListTile(
-                    leading: CircleAvatar(
-                      radius: 30,
-                      child: Padding(
-                        padding: EdgeInsets.all(6),
-                        child: FittedBox(
-                          child: Text('\$${userTransction[index].amount}'),
+                  title: Text(
+                    userTransction[index].title,
+                    style: Theme.of(context).textTheme.title,
+                  ),
+                  subtitle: Text(
+                    DateFormat.yMMMd().format(userTransction[index].date),
+                  ),
+                  trailing: MediaQuery.of(context).size.width > 300
+                      ? FlatButton.icon(
+                          textColor: Colors.orangeAccent,
+                          onPressed: () => deleteData(userTransction[index].id),
+                          icon: Icon(Icons.delete),
+                          label: Text('Delete'),
+                        )
+                      : IconButton(
+                          icon: Icon(
+                            Icons.delete,
+                            size: 30,
+                            color: Colors.red,
+                          ),
+                          onPressed: () => deleteData(userTransction[index].id),
                         ),
-                      ),
-                    ),
-                    title: Text(
-                      userTransction[index].title,
-                      style: Theme.of(context).textTheme.title,
-                    ),
-                    subtitle: Text(
-                      DateFormat.yMMMd().format(userTransction[index].date),
-                    ),
-                    trailing: IconButton(
-                      icon: Icon(
-                        Icons.delete,
-                        size: 30,
-                        color: Colors.red,
-                      ),
-                      onPressed: () => deleteData(userTransction[index].id),
-                    ),
-                  ),
-                );
-                // return Card(
-                //   child: Row(
-                //     children: <Widget>[
-                //       Container(
-                //         margin:
-                //             EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                //         child: Text(
-                //           '\$' +
-                //               '${userTransction[index].amount.toStringAsFixed(2)}',
-                //           style: TextStyle(
-                //             fontWeight: FontWeight.bold,
-                //             fontSize: 20,
-                //             color: Theme.of(context).primaryColor,
-                //           ),
-                //         ),
-                //         decoration: BoxDecoration(
-                //           border: Border.all(
-                //             color: Theme.of(context).primaryColor,
-                //             width: 2,
-                //           ),
-                //         ),
-                //         padding: EdgeInsets.all(10),
-                //       ),
-                //       Column(
-                //         crossAxisAlignment: CrossAxisAlignment.start,
-                //         // mainAxisAlignment: MainAxisAlignment.,
-                //         children: <Widget>[
-                //           Text(
-                //             userTransction[index].title,
-                //             style: Theme.of(context).textTheme.title,
-                //           ),
-                //           Text(
-                //             DateFormat('yyyy-MM-dd')
-                //                 .format(userTransction[index].date),
-                //             // item.date.toString(),
-                //             style: TextStyle(
-                //               color: Colors.grey,
-                //             ),
-                //           )
-                //         ],
-                //       )
-                //     ],
-                //   ),
-                // );
-              },
-              itemCount: userTransction.length,
-            ),
-    );
+                ),
+              );
+              // return Card(
+              //   child: Row(
+              //     children: <Widget>[
+              //       Container(
+              //         margin:
+              //             EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+              //         child: Text(
+              //           '\$' +
+              //               '${userTransction[index].amount.toStringAsFixed(2)}',
+              //           style: TextStyle(
+              //             fontWeight: FontWeight.bold,
+              //             fontSize: 20,
+              //             color: Theme.of(context).primaryColor,
+              //           ),
+              //         ),
+              //         decoration: BoxDecoration(
+              //           border: Border.all(
+              //             color: Theme.of(context).primaryColor,
+              //             width: 2,
+              //           ),
+              //         ),
+              //         padding: EdgeInsets.all(10),
+              //       ),
+              //       Column(
+              //         crossAxisAlignment: CrossAxisAlignment.start,
+              //         // mainAxisAlignment: MainAxisAlignment.,
+              //         children: <Widget>[
+              //           Text(
+              //             userTransction[index].title,
+              //             style: Theme.of(context).textTheme.title,
+              //           ),
+              //           Text(
+              //             DateFormat('yyyy-MM-dd')
+              //                 .format(userTransction[index].date),
+              //             // item.date.toString(),
+              //             style: TextStyle(
+              //               color: Colors.grey,
+              //             ),
+              //           )
+              //         ],
+              //       )
+              //     ],
+              //   ),
+              // );
+            },
+            itemCount: userTransction.length,
+          );
   }
 }
